@@ -30,6 +30,17 @@ if( ${USE_SYSTEM_HDF5} MATCHES "OFF" )
   set( ITK_DEPENDENCIES HDF5 ${ITK_DEPENDENCIES} )
 endif()
 
+if( ${BUILD_SHARED_LIBS} MATCHES "OFF" )
+  if(UNIX AND NOT APPLE)
+    if(NOT "${CMAKE_CXX_FLAGS}" MATCHES "-lrt")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lrt" CACHE STRING "" FORCE)
+    endif()
+    if(NOT "${CMAKE_C_FLAGS}" MATCHES "-lrt")
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lrt" CACHE STRING "" FORCE)
+    endif()
+  endif()
+endif()
+
 ExternalProject_Add(ITK
   DEPENDS ${ITK_DEPENDENCIES}
   GIT_REPOSITORY ${git_protocol}://itk.org/ITK.git
@@ -52,6 +63,8 @@ ExternalProject_Add(ITK
     -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DEPENDENCIES_DIR}
     -DITK_USE_SYSTEM_HDF5:BOOL=ON
     -DHDF5_DIR:PATH=${HDF5_DIR}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     ${_vtkoptions}
 )
 

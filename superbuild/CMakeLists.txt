@@ -86,6 +86,23 @@ else()
   include( ${ITK_USE_FILE} )
 endif()
 
+if( ${BUILD_SHARED_LIBS} MATCHES "OFF" )
+  if(UNIX AND NOT APPLE)
+    if(NOT "${CMAKE_CXX_FLAGS}" MATCHES "-fPIC")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" CACHE STRING "" FORCE)
+    endif()
+    if(NOT "${CMAKE_C_FLAGS}" MATCHES "-fPIC")
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" CACHE STRING "" FORCE)
+    endif()
+    if(NOT "${CMAKE_CXX_FLAGS}" MATCHES "-ldl")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl" CACHE STRING "" FORCE)
+    endif()
+    if(NOT "${CMAKE_C_FLAGS}" MATCHES "-ldl")
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ldl" CACHE STRING "" FORCE)
+    endif()
+  endif()
+endif()
+
 ExternalProject_Add( Statismo
   DEPENDS ${Statismo_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
@@ -107,5 +124,7 @@ ExternalProject_Add( Statismo
     -DVTK_DIR:PATH=${VTK_DIR}
     -DHDF5_DIR:PATH=${HDF5_DIR}
     -DEIGEN3_INCLUDE_DIR:PATH=${EIGEN3_INCLUDE_DIR}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
   INSTALL_COMMAND ""
 )

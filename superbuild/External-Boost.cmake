@@ -47,13 +47,17 @@ elseif(${BUILD_SHARED_LIBS} MATCHES ON)
   set(BUILD_LIBS "shared")
 endif()
 
+
+set(Boost_Additional_Flags "-fPIC -lrt")
+
+
 ExternalProject_Add(Boost
   BUILD_IN_SOURCE 1
   URL ${Boost_url}
   URL_MD5 ${Boost_md5}
   UPDATE_COMMAND ""
   CONFIGURE_COMMAND ${Boost_Bootstrap_Command} --prefix=${INSTALL_DEPENDENCIES_DIR}/lib
-BUILD_COMMAND ${Boost_b2_Command} install -j8   --prefix=${INSTALL_DEPENDENCIES_DIR} --with-thread --with-filesystem --with-system --with-date_time --with-program_options address-model=${Boost_address_model} link=${BUILD_LIBS} ${boost_toolset}
+BUILD_COMMAND ${Boost_b2_Command} install -j8   --prefix=${INSTALL_DEPENDENCIES_DIR} --with-thread --with-filesystem --with-system --with-date_time --with-program_options address-model=${Boost_address_model} link=${BUILD_LIBS} ${boost_toolset} cxxflags=${Boost_Additional_Flags} cflags=${Boost_Additional_Flags}
   INSTALL_COMMAND ""
 )
 
