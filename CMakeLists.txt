@@ -16,7 +16,12 @@ set(STATISMO_VERSION ${STATISMO_MAJOR_VERSION}.${STATISMO_MINOR_VERSION}.${STATI
 
 set( statismo_LIB_VERSION ${STATISMO_VERSION} )
 set( statismo_LIB_SOVERSION ${STATISMO_MAJOR_VERSION}.${STATISMO_MINOR_VERSION} )
-set( statismo_LIB_TYPE SHARED )
+
+if(BUILD_SHARED_LIBS)
+  set( statismo_LIB_TYPE SHARED )
+else()
+  set( statismo_LIB_TYPE STATIC )
+endif()
 
 
 # Setup build locations.
